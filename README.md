@@ -2,5 +2,5 @@
 
 - `ioutil/IsFile`
 - `ioutil/IsDir`
-- `ioutil/NewTempDir`
-- `ioutil/NewTempFile`
+- `ioutil/MustNewTempDir`
+- `ioutil/MustNewTempFile`
