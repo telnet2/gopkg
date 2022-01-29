@@ -1,4 +1,4 @@
-module code.byted.org/telnet2/gopkg
+module github.com/telnet2/gopkg
 
 go 1.17
 
