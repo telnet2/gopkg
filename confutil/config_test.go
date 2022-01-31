@@ -3,19 +3,13 @@ package confutil
 import (
 	"testing"
 
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/suite"
 	"github.com/telnet2/gopkg/ioutil"
 )
 
 type TestMe struct {
 	suite.Suite
-}
-
-func (tm *TestMe) TestConfigType() {
-	tm.Equal(YAML, GuessConfigType("abcd.yaml"))
-	tm.Equal(YAML, GuessConfigType("abcd.yml"))
-	tm.Equal(YAML, GuessConfigType("abcd.YAML"))
-	tm.Equal(JSON, GuessConfigType("abcd.JSON"))
 }
 
 func (tm *TestMe) TestTryConfigParsingYAML() {
@@ -50,8 +44,13 @@ func (tm *TestMe) TestTryConfigParsingJSON() {
 	}`)
 	defer remove()
 
+	conf := viper.New()
+	conf.SetConfigFile("jsonfile.json")
+	err := conf.ReadInConfig()
+	tm.NoError(err)
+
 	data := map[string]interface{}{}
-	tm.NoError(TryConfigParsing(&data, "jsonfile.JSON"))
+	tm.NoError(TryConfigParsing(&data, "jsonfile.json"))
 	tm.Equal("hello", data["config"].(map[string]interface{})["array"].([]interface{})[0])
 }
 
