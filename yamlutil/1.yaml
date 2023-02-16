@@ -1,0 +1,6 @@
+file1:
+  input: "hello"
+  output: ["h", "e", "l", "l", "o"]
+  maps:
+    key: "value"
+    hello: "world"

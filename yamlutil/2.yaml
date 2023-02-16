@@ -1,0 +1,11 @@
+file1:
+  input: "file1"
+  output: ["array", "replaced"]
+  maps:
+    mapkey: "merged"
+file2:
+  input: "hello"
+  output: ["a", "b", "c"]
+  maps:
+    key: "value"
+    hello: "world"
