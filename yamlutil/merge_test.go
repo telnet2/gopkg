@@ -19,7 +19,7 @@ type FileConfig struct {
 
 func TestReadYAMLFiles(t *testing.T) {
 	f := FileConfig{}
-	err := ReadYAMLFiles(&f, "./1.yaml", "./2.yaml")
+	_, err := ReadYAMLFiles(&f, "./1.yaml", "./2.yaml")
 	require.NoError(t, err)
 	require.Equal(t, "file1", f.File1.Input)
 	content := `file1:
