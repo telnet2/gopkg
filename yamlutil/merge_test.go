@@ -46,7 +46,7 @@ file2:
 
 func TestMergeYAML(t *testing.T) {
 	f := FileConfig{}
-	err := MergeYAML(&f, `#
+	_, err := MergeYAML(&f, `#
 file1:
   input: "file1"`,
 		`#
