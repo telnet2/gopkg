@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestIsEmpty(t *testing.T) {
@@ -30,11 +31,17 @@ func TestRemoveEmpty(t *testing.T) {
 			"nested": {
 				"object": ""
 			}
-		}
+		},
+		"object_array": [
+			{ "type": "", "value": "" }
+		]
 	}`), &x)
 	RemoveEmptyFromMap(x)
 	assert.NoError(t, err)
 	assert.Empty(t, x)
+
+	xx, _ := json.Marshal(x)
+	require.JSONEq(t, `{}`, string(xx))
 
 	var (
 		nilptr *jsonField
@@ -76,6 +83,35 @@ func TestMarshalJSONOmitEmpty(t *testing.T) {
 
 	jzon, _ := MarshalJSONOmitEmptyIndented(x)
 	assert.JSONEq(t, `{"description":"root", "type":"object"}`, string(jzon))
+}
+
+func TestRemoveEmpty2(t *testing.T) {
+	x := map[string]interface{}{}
+	err := json.Unmarshal([]byte(`{
+		"string": "",
+		"integer": 0,
+		"number": 0.0,
+		"null": null,
+		"array": [],
+		"object": {
+			"nested": {
+				"object": ""
+			}
+		},
+		"object_array": [
+			{ "type": "", "value": "" },
+			{ "type": "string" }
+		],
+		"non-empty": {
+			"type": "string"
+		}
+	}`), &x)
+	RemoveEmptyFromMap(x)
+	assert.NoError(t, err)
+	assert.NotEmpty(t, x)
+
+	xx, _ := json.Marshal(x)
+	require.JSONEq(t, `{"object_array":[{"type":"string"}],"non-empty":{"type":"string"}}`, string(xx))
 }
 
 type jsonField struct {
