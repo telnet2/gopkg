@@ -40,6 +40,6 @@ var _ = Describe("matcher_test", func() {
 	})
 
 	It("should return true if two JSONs are different", func() {
-		Expect([]byte(`{"hello":"world","a":"b"}`)).NotTo(EqualJson([]byte(`{"a":"c","hello":"world"}`)))
+		Expect([]byte(`{"hello":"world","a":"b"}`)).NotTo(EqualJson([]byte(`{"a":"b","hello":"World"}`)))
 	})
 })

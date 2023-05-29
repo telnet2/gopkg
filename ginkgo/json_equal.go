@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/TwiN/go-color"
 	"github.com/onsi/gomega/types"
 	diff "github.com/yudai/gojsondiff"
 	"github.com/yudai/gojsondiff/formatter"
@@ -59,7 +60,7 @@ func formatDiff(actual []byte, res diff.Diff) string {
 
 		formatter := formatter.NewAsciiFormatter(actualJson, config)
 		diffString, _ := formatter.Format(res)
-		return diffString
+		return color.White + diffString
 	}
 	return ""
 }

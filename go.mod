@@ -5,6 +5,7 @@ go 1.19
 require github.com/stretchr/testify v1.8.0
 
 require (
+	github.com/TwiN/go-color v1.4.0
 	github.com/creasty/defaults v1.7.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/ganbarodigital/go_shellexpand v0.1.0
