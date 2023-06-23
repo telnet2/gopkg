@@ -16,13 +16,13 @@ func TestGlobalRecoveryHook(t *testing.T) {
 
 	wg := sync.WaitGroup{}
 	wg.Add(1)
-	InstallGlobalRecoveryHook(func(stackTrace string, err error) {
+	InstallGlobalPanicHook(func(stackTrace string, err error) {
 		gst = stackTrace
 		gerr = err
 		wg.Done()
 	})
 	go func() {
-		defer Recovery()
+		defer RecoverFromPanic()
 		panic("hello")
 	}()
 

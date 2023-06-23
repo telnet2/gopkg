@@ -7,23 +7,31 @@ import (
 )
 
 var (
-	l                  sync.Mutex
-	globalRecoveryHook func(stackTrace string, err error) = func(stackTrace string, err error) {}
+	l            sync.Mutex
+	nopPanicHook = func(stackTrace string, err error) {}
+
+	// globalPanicHook is the function to be called when a panic occurs.
+	// It is set to nopPanicHook if no hook is set or nil hook is set via InstallGlobalPanicHook.
+	globalPanicHook func(stackTrace string, err error) = nopPanicHook
 )
 
-func InstallGlobalRecoveryHook(hook func(stackTrace string, err error)) {
+func InstallGlobalPanicHook(hook func(stackTrace string, err error)) {
 	l.Lock()
 	defer l.Unlock()
-	globalRecoveryHook = hook
+	if hook == nil {
+		globalPanicHook = nopPanicHook
+	} else {
+		globalPanicHook = hook
+	}
 }
 
-// Recovery is a helper function to recover from panics.
+// RecoverFromPanic is a helper function to recover from panics.
 // It helps handling the panic consistently with the global recovery hook.
-func Recovery() (stackTrace string, err error) {
+func RecoverFromPanic() (stackTrace string, err error) {
 	if panicMsg := recover(); panicMsg != nil {
 		stackTrace = string(debug.Stack())
 		err = fmt.Errorf("panic occurred: %v", panicMsg)
-		globalRecoveryHook(stackTrace, err)
+		globalPanicHook(stackTrace, err)
 		return stackTrace, err
 	}
 	return "", nil
