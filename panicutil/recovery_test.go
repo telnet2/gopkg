@@ -1,4 +1,4 @@
-package recover
+package panicutil
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestGlobalRecoveryHook(t *testing.T) {
+func TestGlobalPanicHook(t *testing.T) {
 	var (
 		gst  string
 		gerr error
