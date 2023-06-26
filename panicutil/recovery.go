@@ -27,11 +27,14 @@ func InstallGlobalPanicHook(hook func(stackTrace string, err error)) {
 
 // RecoverFromPanic is a helper function to recover from panics.
 // It helps handling the panic consistently with the global recovery hook.
-func RecoverFromPanic() (stackTrace string, err error) {
+func RecoverFromPanic(postPanicHandler func(string, error)) (stackTrace string, err error) {
 	if panicMsg := recover(); panicMsg != nil {
 		stackTrace = string(debug.Stack())
 		err = fmt.Errorf("panic occurred: %v", panicMsg)
 		globalPanicHook(stackTrace, err)
+		if postPanicHandler != nil {
+			postPanicHandler(stackTrace, err)
+		}
 		return stackTrace, err
 	}
 	return "", nil
