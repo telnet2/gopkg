@@ -2,19 +2,11 @@ package bench
 
 import "testing"
 
-const HeaderKey = "X-Header-Key"
-
 var (
 	headers = map[string]string{HeaderKey: "value"}
 
 	headerKeyValue string
 )
-
-var Headers = struct {
-	Key string
-}{
-	Key: HeaderKey,
-}
 
 func GetHeader(key string) string {
 	return headers[key]
