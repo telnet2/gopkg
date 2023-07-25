@@ -6,7 +6,6 @@ import (
 	"reflect"
 	"strings"
 
-	shellexpand "github.com/ganbarodigital/go_shellexpand"
 	"github.com/jinzhu/copier"
 	"github.com/joho/godotenv"
 	"github.com/mitchellh/reflectwalk"
@@ -50,15 +49,18 @@ func (em EnvMap) Merge(other EnvMap) {
 
 // Expand performs shell expansion using this EnvMap.
 func (em EnvMap) NewExpander() func(string) string {
-	callbacks := shellexpand.ExpansionCallbacks{
-		LookupVar: func(s string) (string, bool) {
-			v, ok := em[s]
-			return v, ok
-		},
-	}
+	// callbacks := shellexpand.ExpansionCallbacks{
+	// 	LookupVar: func(s string) (string, bool) {
+	// 		v, ok := em[s]
+	// 		return v, ok
+	// 	},
+	// }
 	return func(input string) string {
-		out, _ := shellexpand.Expand(input, callbacks)
-		return out
+		refs, ok := CaptureEnvNameAndDefaultValue(input)
+		if ok {
+			return ReplaceEnvVars(input, refs, em)
+		}
+		return input
 	}
 }
 

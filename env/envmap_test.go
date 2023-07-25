@@ -64,8 +64,12 @@ var _ = Describe("envmap_test", func() {
 			// Replace with default value
 			Expect(expand("Hello ${HELLO:-WELCOME}")).To(Equal("Hello hello"))
 			Expect(expand("Hello ${WORLD:-WELCOME}")).To(Equal("Hello WELCOME"))
-			// This works differently from bash
-			Expect(expand("/$HELLO/world")).To(Equal("/$HELLO/world"))
+			Expect(expand("/$HELLO/world")).To(Equal("/hello/world"))
+			Expect(expand("$HELLO$WORLD$GYPSY")).To(Equal("hello"))
+			Expect(expand("${HELLO}$WORLD${GYPSY}")).To(Equal("hello"))
+			Expect(expand("${HELLO}${WORLD:-}${GYPSY:- GYPSY}")).To(Equal("hello GYPSY"))
+			// it doesn't support recursive expansion
+			Expect(expand("${HELLO}${WORLD:-}${ENV:-${HELLO}}")).To(Equal("hello${HELLO}"))
 		})
 	})
 
@@ -77,15 +81,15 @@ var _ = Describe("envmap_test", func() {
 		Expect(lines).To(HaveLen(5)) // with last empty line
 	})
 
-	It("should expand string fields with `envexp` tag", func() {
+	It("should expand string fields", func() {
 		envmap := EnvMap{"KEY": "VALUE", "HOME": "/homedir"}
 		type TestSubtype struct {
-			LogDir  string `envexp:""`
-			WorkDir string `envexp:""`
+			LogDir  string
+			WorkDir string
 		}
 
 		type TestStruct struct {
-			Command    string `envexp:""`
+			Command    string
 			SubType    TestSubtype
 			SubTypePtr *TestSubtype
 			NilPtr     *TestSubtype
@@ -108,6 +112,6 @@ var _ = Describe("envmap_test", func() {
 		Expect(x.SubType.WorkDir).To(Equal(""))
 		Expect(x.SubTypePtr.LogDir).To(ContainSubstring("/homedir=/log"))
 		// This doesn't work as it shoud do.
-		Expect(x.SubTypePtr.WorkDir).To(ContainSubstring("$HOME/work"))
+		Expect(x.SubTypePtr.WorkDir).To(ContainSubstring("/homedir/work"))
 	})
 })
